@@ -14,15 +14,25 @@ node {
         sh("chmod +x ./kubectl && mv kubectl /usr/local/sbin")
     }
 
-    stage('Build image') {
-        sh("docker build -t ${imageTag} .")
+    stage('Run Go tests') {
+        sh("docker run ${imageTag} go test")
     }
 
     stage('Run Go tests') {
         sh("docker run ${imageTag} go test")
     }
 
+
     withCredentials([usernamePassword(credentialsId: '15966f9c-6e6a-48a7-b7b9-1d9fa5d359fb', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+        imageTag = "${USER}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+            stage('Build image') {
+            sh("docker build -t ${imageTag} .")
+        }
+
+        stage('Run Go tests') {
+            sh("docker run ${imageTag} go test")
+        }
+
         stage('Push image to registry') {
             sh("docker login -u ${USER} -p ${PASS}")
             sh("docker push ${imageTag}")
