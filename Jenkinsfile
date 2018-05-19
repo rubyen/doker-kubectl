@@ -1,9 +1,11 @@
 node {
-    def appName = 'gceme'
+    def appName = 'sample-app'
     def feSvcName = "${appName}-frontend"
     def username = "testuserwsk8s"
     def password = "cacamaca32"
     def imageTag = "${username}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
+    def doker-user = ''
+    def doker-password = ''
 
     checkout scm
 
@@ -21,7 +23,10 @@ node {
     }
 
     stage('Push image to registry') {
-        sh("docker login -u ${username} -p ${password}")
+        withCredentials([usernamePassword(credentialsId: '15966f9c-6e6a-48a7-b7b9-1d9fa5d359fb', passwordVariable:'PASSWORD', usernameVariable:'USERNAME')]) {
+            docker-user = env.USERNAME
+            doker-password = env.PASSWORD
+        }
         sh("docker push ${imageTag}")
     }
 
