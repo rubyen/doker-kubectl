@@ -22,12 +22,11 @@ node {
         sh("docker run ${imageTag} go test")
     }
 
-    stage('Push image to registry') {
-        withCredentials([usernamePassword(credentialsId: '15966f9c-6e6a-48a7-b7b9-1d9fa5d359fb', passwordVariable:'PASSWORD', usernameVariable:'USERNAME')]) {
-            dockerUser = env.USERNAME
-            dokerPassword = env.PASSWORD
+    withCredentials([usernamePassword(credentialsId: '15966f9c-6e6a-48a7-b7b9-1d9fa5d359fb', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+        stage('Push image to registry') {
+            sh("docker login -u ${USER} -p ${PASS}")
+            sh("docker push ${imageTag}")
         }
-        sh("docker push ${imageTag}")
     }
 
     stage("Deploy Application") {
