@@ -4,8 +4,8 @@ node {
     def username = "testuserwsk8s"
     def password = "cacamaca32"
     def imageTag = "${username}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
-    def doker-user = ''
-    def doker-password = ''
+    def dokerUser = ''
+    def dokerPassword = ''
 
     checkout scm
 
@@ -24,8 +24,8 @@ node {
 
     stage('Push image to registry') {
         withCredentials([usernamePassword(credentialsId: '15966f9c-6e6a-48a7-b7b9-1d9fa5d359fb', passwordVariable:'PASSWORD', usernameVariable:'USERNAME')]) {
-            docker-user = env.USERNAME
-            doker-password = env.PASSWORD
+            dockerUser = env.USERNAME
+            dokerPassword = env.PASSWORD
         }
         sh("docker push ${imageTag}")
     }
