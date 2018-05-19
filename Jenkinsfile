@@ -1,9 +1,6 @@
 node {
     def appName = 'sample-app'
     def feSvcName = "${appName}-frontend"
-    def username = "testuserwsk8s"
-    def password = "cacamaca32"
-    def imageTag = "${username}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
     def dokerUser = ''
     def dokerPassword = ''
 
@@ -13,15 +10,6 @@ node {
         sh("curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.9.7/bin/linux/amd64/kubectl")
         sh("chmod +x ./kubectl && mv kubectl /usr/local/sbin")
     }
-
-    stage('Run Go tests') {
-        sh("docker run ${imageTag} go test")
-    }
-
-    stage('Run Go tests') {
-        sh("docker run ${imageTag} go test")
-    }
-
 
     withCredentials([usernamePassword(credentialsId: '15966f9c-6e6a-48a7-b7b9-1d9fa5d359fb', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
         imageTag = "${USER}/${appName}:${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
